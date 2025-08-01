@@ -39,17 +39,20 @@ export function analyzeCode(code: string, document: vscode.TextDocument) {
             node.left.property.type === 'Identifier' &&
             node.left.property.name === 'handler'
           ) {
-            console.log('Lambda handler on line:', node.loc?.start.line); // ?-optional chaining
+            console.log('Lambda handler on line:', node.loc?.start.line); // ?-optional chaining operator
           }
         },
 
         StringLiteral(path) {
             const value = path.node.value; // extract the value of stringliteral in node
 
+            // for all rules: if conditions are true push result in matches diagnostic array
+
+
             // rule 1: apply the regex rule to hardcoded secrets and and assign it to result
             const secretsResult = applySecretsRule(value);
 
-            // if conditions are true push result in matches diagnostic array
+        
             // if hardcoded secret is present, push Diagnostic object into matches array
             if (secretsResult) {
                 matches.push(makeDiagnostic(secretsResult.message, path));
@@ -70,13 +73,26 @@ export function analyzeCode(code: string, document: vscode.TextDocument) {
     showDiagnostics(matches, document);
 }
 
-// helper function to create vscode.Diagnostic from Babel AST node path
+// helper function to create vscode.Diagnostic object from Babel AST node path
 // first argument is the warning message, second is the node path object from AST
-// returns vscode.Diagnostic object
+// returns vscode.Diagnostic object to be sent to the editor
 
 function makeDiagnostic(message: string, path: any): vscode.Diagnostic {
     return new vscode.Diagnostic(
 
- );
+        // range object that tells us exact location of issue in the file - start and end positions
+        // loc object added after Babel parses code - tells where the AST node is in the file
+
+
+        new vscode.Range(
+            path.node.loc.start.line - 1,  //Babel's line numbers are 1-based (first line is 1)
+            path.node.loc.start.column,    // VS Code Range API uses 0-based
+            path.node.loc.end.line - 1,    // -1 converts Babel 1-based line to vsCode 0-based
+            path.node.loc.end.column
+          ),
+          message,                           //warning text
+          vscode.DiagnosticSeverity.Warning  // tells us how severe  - 
+
+    );
 
 }
