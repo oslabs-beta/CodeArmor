@@ -2,9 +2,9 @@ import * as babelParser from '@babel/parser'; //babel parser turns code to AST
 import traverse from '@babel/traverse'; //helps traverse node in AST
 import * as vscode from 'vscode'; // brings VScode api to show diagnostic in editor
 
-import { applySecretsRule } from './secretsRule'; // brings rule for hardcoded secrets
-import { applyIamWildcardRule } from './IamRule'; // brings rule for Iam permissions
-import { showDiagnostics } from '..utils/diagnostics'; // helper to send results to the editor
+//import { applySecretsRule } from './secretsRule'; // brings rule for hardcoded secrets
+import { applyIamWildcardRule } from './iamRule'; // brings rule for Iam permissions
+//import { showDiagnostics } from '..utils/diagnostics'; // helper to send results to the editor
 
 
 // entry point from extension.ts, code is the text, document is the active file in editor
@@ -50,13 +50,13 @@ export function analyzeCode(code: string, document: vscode.TextDocument) {
 
 
             // rule 1: apply the regex rule to hardcoded secrets and and assign it to result
-            const secretsResult = applySecretsRule(value);
+//            const secretsResult = applySecretsRule(value);
 
         
             // if hardcoded secret is present, push Diagnostic object into matches array
-            if (secretsResult) {
-                matches.push(makeDiagnostic(secretsResult.message, path));
-              }
+//            if (secretsResult) {
+//                matches.push(makeDiagnostic(secretsResult.message, path));
+//              }
 
 
             // rule 2: if Iam is overly permissive; push Diagnostic object into matches array
@@ -70,7 +70,7 @@ export function analyzeCode(code: string, document: vscode.TextDocument) {
 
 
     // run function in diagnostics file to show warning in vs code automatically
-    showDiagnostics(matches, document);
+//    showDiagnostics(matches, document);
 }
 
 // helper function to create vscode.Diagnostic object from Babel AST node path
