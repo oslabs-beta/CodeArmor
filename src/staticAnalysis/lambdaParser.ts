@@ -2,7 +2,7 @@ import * as babelParser from '@babel/parser'; //babel parser turns code to AST
 import traverse from '@babel/traverse'; //helps traverse node in AST
 import * as vscode from 'vscode'; // brings VScode api to show diagnostic in editor
 
-//import { applySecretsRule } from './secretsRule'; // brings rule for hardcoded secrets
+import { applyAwsSecretsRule } from './awsSecretsRule';
 import { applyIamWildcardRule } from './iamRule'; // brings rule for Iam permissions
 //import { showDiagnostics } from '..utils/diagnostics'; // helper to send results to the editor
 
@@ -46,17 +46,15 @@ export function analyzeCode(code: string, document: vscode.TextDocument) {
         StringLiteral(path) {
             const value = path.node.value; // extract the value of stringliteral in node
 
-            // for all rules: if conditions are true push result in matches diagnostic array
-
-
-            // rule 1: apply the regex rule to hardcoded secrets and and assign it to result
-//            const secretsResult = applySecretsRule(value);
+  
+            // rule 1: apply the regex rule to aws hardcoded secret key and and assign it to result
+            const awsSecretsResult = applyAwsSecretsRule(value);
 
         
             // if hardcoded secret is present, push Diagnostic object into matches array
-//            if (secretsResult) {
-//                matches.push(makeDiagnostic(secretsResult.message, path));
-//              }
+            if (awsSecretsResult) {
+                matches.push(makeDiagnostic(awsSecretsResult.message, path));
+              }
 
 
             // rule 2: if Iam is overly permissive; push Diagnostic object into matches array

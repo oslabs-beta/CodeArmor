@@ -4,4 +4,6 @@ exports.handler = async (event, context) => {
       Action: '*',
       Resource: '*'
     };
+    const awsSecret = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY";
+
   };
