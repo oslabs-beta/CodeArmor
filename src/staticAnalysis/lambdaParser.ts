@@ -4,10 +4,11 @@ import * as vscode from 'vscode'; // brings VScode api to show diagnostic in edi
 
 import { applyAwsSecretsRule } from './awsSecretsRule';
 import { applyIamWildcardRule } from './iamRule'; // brings rule for Iam permissions
-//import { showDiagnostics } from '..utils/diagnostics'; // helper to send results to the editor
+//import { showDiagnostics } from '..utils/diagnostics'; // helper function to send results to the editor
 
 
-// entry point from extension.ts, code is the text, document is the active file in editor
+// entry point from extension.ts, code is the text from active editor
+//  document is the active file in editor
 export function analyzeCode(code: string, document: vscode.TextDocument) {
 
     // babelParser.parse -function converts source code into ast
@@ -22,16 +23,18 @@ export function analyzeCode(code: string, document: vscode.TextDocument) {
     // vscode.Diagnostic is a data structure used by vscode extensions to describe problem found in document
     // It contains range, message, severity, code for problem, source, extra info
 
-    const matches: vscode.Diagnostic[] = [];
+    const diagnostics: vscode.Diagnostic[] = [];
+    let hasLambdaHandler = false;
 
+    // first pass is to detect if there is a Lambda Handler
     // traverse walks through AST - first argument is ast; second argument is visitorObject 
     // for every AssignmentExpression, get the node
     traverse(ast, {
         AssignmentExpression(path) {    //NodePath object wraps around AST node with metadata and helper methods
           const node = path.node;       //extracts just the raw AST node
 
-            // does the left side of the node (member expression) have exports.handler?
-            // exports.handler identifies the expression as a lambda function handler
+            // does the left side of the node (member expression) have 'exports.handler'?
+            // 'exports.handler' identifies the expression as a lambda function handler
           if (
             node.left.type === 'MemberExpression' &&
             node.left.object.type === 'Identifier' &&
@@ -39,36 +42,33 @@ export function analyzeCode(code: string, document: vscode.TextDocument) {
             node.left.property.type === 'Identifier' &&
             node.left.property.name === 'handler'
           ) {
+            hasLambdaHandler = true;
             console.log('Lambda handler on line:', node.loc?.start.line); // ?-optional chaining operator
           }
         },
-
-        StringLiteral(path) {
-            const value = path.node.value; // extract the value of stringliteral in node
-
-  
-            // rule 1: apply the regex rule to aws hardcoded secret key and and assign it to result
-            const awsSecretsResult = applyAwsSecretsRule(value);
-
-        
-            // if hardcoded secret is present, push Diagnostic object into matches array
-            if (awsSecretsResult) {
-                matches.push(makeDiagnostic(awsSecretsResult.message, path));
-              }
-
-
-            // rule 2: if Iam is overly permissive; push Diagnostic object into matches array
-            const iamResult = applyIamWildcardRule(value);
-            if (iamResult) {
-                matches.push(makeDiagnostic(iamResult.message, path));
-              }
-
-        },
     });
 
+        // second pass: Apply all rules only if handler is present
+    if (hasLambdaHandler) {
+        traverse(ast, {
+            ObjectExpression(path) {
+                const message = applyIamWildcardRule(path.node);
+                if (message) {
+                    diagnostics.push(makeDiagnostic(message, path));
+                }
+            },
 
+            StringLiteral(path) {
+                const message = applyAwsSecretsRule(path.node.value);
+                if (message) {
+                    diagnostics.push(makeDiagnostic(message, path));
+                }
+            }
+        });
+    }
+     
     // run function in diagnostics file to show warning in vs code automatically
-//    showDiagnostics(matches, document);
+//    showDiagnostics(diagnostics, document);
 }
 
 // helper function to create vscode.Diagnostic object from Babel AST node path
@@ -80,7 +80,6 @@ function makeDiagnostic(message: string, path: any): vscode.Diagnostic {
 
         // range object that tells us exact location of issue in the file - start and end positions
         // loc object added after Babel parses code - tells where the AST node is in the file
-
 
         new vscode.Range(
             path.node.loc.start.line - 1,  //Babel's line numbers are 1-based (first line is 1)

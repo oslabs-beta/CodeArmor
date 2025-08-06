@@ -18,7 +18,7 @@ import { parse } from '@babel/parser';  // get the parse function from Babel
 import traverse from '@babel/traverse';  // utlity that takes an AST and visits each node in the tree
 import * as t from '@babel/types';       // import all the babel types package and group into t
 
-import { applyIamWildcardRule } from '../staticAnalysis/iamRule'; // import rule function to test
+import { applyIamWildcardRule } from '../staticAnalysis/iamRule'; // import rule functions to test
 import { applyAwsSecretsRule } from '../staticAnalysis/awsSecretsRule';
 
 // Path to sample input file
@@ -26,16 +26,17 @@ const filePath = path.join(__dirname, '../sample-lambdas/insecure.js');
 const code = fs.readFileSync(filePath, 'utf-8');  //returns contents of file into string
 
 // Parse code to AST
-const ast = parse(code, {
-  sourceType: 'module',
-  plugins: ['typescript', 'jsx'],
+const ast = parse(code, {         // first argument is active code in vs editor
+  sourceType: 'module',           // second argument is options object
+  plugins: ['typescript', 'jsx'],   // define source type and plugins
 });
 
-let hasLambdaHandler = false;
-const violations: string[] = [];
+let hasLambdaHandler = false;   // initialize handler detector to false
+const violations: string[] = [];  // initialize violations message array
 
 // Traverse AST to detect handler, IAM wildcard, and AWS Secret Key
-traverse(ast, {
+traverse(ast, {                       // first argument is ast, second is visitor object
+
   // rule 1: check for exports.handler
   AssignmentExpression(path) {
     const node = path.node;
