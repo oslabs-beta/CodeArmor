@@ -1,6 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { parser } from './parser';
+import { showDiagnostics } from './diagnostics/showDiagnostics';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -23,22 +25,18 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(disposable);
 
-  const diagnosticCollection =
-    vscode.languages.createDiagnosticCollection('myExtension');
-  context.subscriptions.push(diagnosticCollection);
+  // Register a new command called 'extension.scanSecurity'
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.scanSecurity', () => {
+      // Get the currently open text editor
+      const editor = vscode.window.activeTextEditor;
 
-  // Listen on opened file
-  vscode.workspace.onDidOpenTextDocument((doc) => {
-    updateDiagnostics(doc, diagnosticCollection);
-  });
-
-  // Diagnose file
-  if (vscode.window.activeTextEditor) {
-    updateDiagnostics(
-      vscode.window.activeTextEditor.document,
-      diagnosticCollection
-    );
-  }
+      // If there is an open editor, run the scan on its document
+      if (editor) {
+        handleDocument(editor.document);
+      }
+    })
+  );
 
   // Hover message
   context.subscriptions.push(
@@ -46,41 +44,35 @@ export function activate(context: vscode.ExtensionContext) {
       { scheme: 'file', language: 'javascript' },
       {
         provideHover(document, position, token) {
-          const range = document.getWordRangeAtPosition(position);
-          const word = document.getText(range);
-          if (word === 'hello') {
-            return new vscode.Hover('Hello to you, too!');
-          }
-          return null;
+          return new vscode.Hover('Hello to you, too!');
         },
       }
     )
   );
 }
 
-function updateDiagnostics(
-  document: vscode.TextDocument,
-  collection: vscode.DiagnosticCollection
-): void {
-  const diagnostics: vscode.Diagnostic[] = [];
-
-  const text = document.getText();
-  const regex = /\bhello\b/g;
-  let match;
-  while ((match = regex.exec(text))) {
-    const startPos = document.positionAt(match.index);
-    const endPos = document.positionAt(match.index + match[0].length);
-    const range = new vscode.Range(startPos, endPos);
-    const diagnostic = new vscode.Diagnostic(
-      range,
-      'CodeArmor says:',
-      vscode.DiagnosticSeverity.Warning
-    );
-    diagnostics.push(diagnostic);
-  }
-
-  collection.set(document.uri, diagnostics);
-}
-
 // This method is called when your extension is deactivated
 export function deactivate() {}
+
+// Function that handles scanning a specific document
+async function handleDocument(document: vscode.TextDocument) {
+  // Only scan JavaScript or TypeScript files
+  if (
+    document.languageId !== 'javascript' &&
+    document.languageId !== 'typescript'
+  ) {
+    return; // Exit early if not JS or TS
+  }
+
+  // Get the full text and filename of the document
+  const fileText = document.getText();
+  const fileName = document.fileName;
+
+  // Run your security rules on the file content
+  const results = parser(fileText, document);
+
+  // Show any issues found in the VS Code editor
+  //   if (results) {
+  //     showDiagnostics(document.uri, results.message, results.path);
+  //   }
+}
