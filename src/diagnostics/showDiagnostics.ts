@@ -4,10 +4,15 @@ const diagnosticCollection =
   vscode.languages.createDiagnosticCollection('securityScan');
 
 export function showDiagnostics(uri: vscode.Uri, message: string, path: any) {
+  if (!path.node.loc) {
+    console.warn('Node location missing, skipping diagnostic:', path.node);
+    return;
+  }
+
   const range = new vscode.Range(
-    path.node.loc.start.line - 1, //Babel's line numbers are 1-based (first line is 1)
-    path.node.loc.start.column, // VS Code Range API uses 0-based
-    path.node.loc.end.line - 1, // -1 converts Babel 1-based line to vsCode 0-based
+    path.node.loc.start.line - 1,
+    path.node.loc.start.column,
+    path.node.loc.end.line - 1,
     path.node.loc.end.column
   );
 
@@ -16,6 +21,7 @@ export function showDiagnostics(uri: vscode.Uri, message: string, path: any) {
     message,
     vscode.DiagnosticSeverity.Warning
   );
+  console.log('Adding diagnostic:', message, range);
 
   diagnosticCollection.set(uri, [diagnostics]);
 }
