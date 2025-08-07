@@ -9,6 +9,11 @@
 		"sourceMap": true,
 		"rootDir": "src",
 		"strict": true,   /* enable all strict type-checking options */
+		"moduleResolution": "Node16",      // ✅ Important: needed for file-based imports
+        "baseUrl": ".",                  // ✅ Base path is project root (where tsconfig.json lives)
+        "paths": {
+        "*": ["src/*"]                 // ✅ Helps resolve imports relative to `src/`
+    }
 		/* Additional Checks */
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
 		// "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */

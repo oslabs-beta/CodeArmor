@@ -52,7 +52,9 @@ traverse(ast, {                       // first argument is ast, second is visito
  
   // Rule 2: only runs if handler is present
   ObjectExpression(path) {
-    if (!hasLambdaHandler) return;
+    if (!hasLambdaHandler) {
+        return;
+    }
 
     const result = applyIamWildcardRule(path.node);
     if (result) {
