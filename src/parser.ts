@@ -2,6 +2,7 @@
 import * as babelParser from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as vscode from 'vscode';
+import { regexHelloRule } from './rules/nonHardCodedSecrets';
 
 export function parser(
   code: string,
@@ -12,6 +13,7 @@ export function parser(
   const ast = babelParser.parse(code, {
     sourceType: 'module',
     plugins: ['typescript', 'jsx'],
+    ranges: true,
   });
 
   let hasHandler = false;
@@ -33,29 +35,8 @@ export function parser(
 
   if (!hasHandler) return diagnostics;
 
-  // if handler exists, scan for hardcoded "hello"
-  traverse(ast, {
-    StringLiteral(path) {
-      if (path.node.value === 'hello') {
-        const loc = path.node.loc;
-        if (!loc) return;
-        const range = new vscode.Range(
-          loc.start.line - 1,
-          loc.start.column,
-          loc.end.line - 1,
-          loc.end.column
-        );
-
-        const diagnostic = new vscode.Diagnostic(
-          range,
-          "Found hard coded secrets 'hello'",
-          vscode.DiagnosticSeverity.Warning
-        );
-
-        diagnostics.push(diagnostic);
-      }
-    },
-  });
+  // Run regex-based rule(s)
+  diagnostics.push(...regexHelloRule(code, document));
 
   return diagnostics;
 }
