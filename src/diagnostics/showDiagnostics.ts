@@ -11,7 +11,7 @@ export function showDiagnostics(uri: vscode.Uri, violations: Array<{ message: st
   const diagnostics = violations.map(violation => {
     const loc = violation.location;
 
-    // Babel location is 1-based, VS Code Range is 0-based
+    // Babel location is 1-based, VS Code Range is 0-based. Tells VS Code what code to highlight with a warning
     const range = new vscode.Range(
       (loc.start.line || 1) - 1,
       (loc.start.column || 0),
