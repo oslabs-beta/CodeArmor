@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
  * Regex-based rule: flag every standalone word "hello" in the document
  * Return a list of Diagnostics with proper ranges computed from document offsets.
  */
-export function regexHelloRule(
+export function hardCodedSecretsRule(
   code: string,
   document: vscode.TextDocument
 ): vscode.Diagnostic[] {

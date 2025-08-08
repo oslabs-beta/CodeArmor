@@ -2,7 +2,7 @@
 import * as babelParser from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as vscode from 'vscode';
-import { regexHelloRule } from './rules/nonHardCodedSecrets';
+import { hardCodedSecretsRule } from './rules/nonHardCodedSecrets';
 
 export function parser(
   code: string,
@@ -36,7 +36,7 @@ export function parser(
   if (!hasHandler) return diagnostics;
 
   // Run regex-based rule(s)
-  diagnostics.push(...regexHelloRule(code, document));
+  diagnostics.push(...hardCodedSecretsRule(code, document));
 
   return diagnostics;
 }

@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { parser } from './parser';
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Security Linter Extension is now active!');
+  console.log('CodeArmor is now active!');
 
   const diagnosticCollection =
     vscode.languages.createDiagnosticCollection('securityScan');
