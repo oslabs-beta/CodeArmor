@@ -44,6 +44,10 @@ export function activate(context: vscode.ExtensionContext) {
       }
     )
   );
+
+  if (vscode.window.activeTextEditor) {
+    runScan(vscode.window.activeTextEditor.document);
+  }
 }
 
 export function deactivate() {}
