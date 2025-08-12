@@ -1,72 +1,53 @@
-import { NodePath } from '@babel/traverse'; 
-import * as t from '@babel/types';
-import { Rule, Violation } from '../rulesEngine/types';
+import * as vscode from 'vscode';
 
-export const noCodeInjectionRule: Rule = {
-  name: 'no-code-injection',
-  description: 'Detects dangerous dynamic code evaluation patterns',
-  run(ast: t.Node, fileName: string): Violation[] {
-    const violations: Violation[] = [];
-
-    const visitor = {
-      // 1. Detect eval() - Arbitrary code execution calls
-      CallExpression(path: NodePath<t.CallExpression>) {
-        // check to see if the called fuction is exactly 'eval'
-        if (t.isIdentifier(path.node.callee, { name: 'eval' })) {
-          addViolation({
-            node: path.node,
-            message: 'CRITICAL: eval() usage detected - allows arbitrary code execution',
-            suggestion: 'Use safe alternatives like JSON.parse() for data processing',
-            fileName
-          });
+export function noCodeInjectionRule(
+    code: string,
+    document: vscode.TextDocument
+): vscode.Diagnostic[] {
+    const diagnostics: vscode.Diagnostic[] = [];
+    
+    // Dangerous patterns to detect
+    const injectionPatterns = [
+        {
+            pattern: /(setTimeout|setInterval)\([^)]*[^'"]\s*[),]/g,
+            message: "Dynamic code execution in timer functions"
+        },
+        {
+            pattern: /\.(innerHTML|outerHTML)\s*=\s*[^'"]/g,
+            message: "Unsanitized HTML assignment"
+        },
+        {
+            pattern: /new\s+(ActiveXObject|Script|WScript|Shell)/gi,
+            message: "Dangerous COM/ActiveX object creation"
+        },
+        {
+            pattern: /Function\.constructor\(/g,
+            message: "Function constructor usage (similar to new Function)"
+        },
+        {
+            pattern: /\.(execScript|evalScript)\s*\(/gi,
+            message: "Legacy script execution method"
         }
-      },
+    ];
 
-      // 2. Detect new Function() - Dynamic function generation 
-      NewExpression(path: NodePath<t.NewExpression>) {
-        if (t.isIdentifier(path.node.callee, { name: 'Function' })) {
-          addViolation({
-            node: path.node,
-            message: 'CRITICAL: new Function() detected - enables code injection',
-            suggestion: 'Pre-compile functions instead of dynamic generation',
-            fileName
-          });
+    injectionPatterns.forEach(({ pattern, message }) => {
+        let match: RegExpExecArray | null;
+        while ((match = pattern.exec(code)) !== null) {
+            const startPos = document.positionAt(match.index);
+            const endPos = document.positionAt(match.index + match[0].length);
+            
+            diagnostics.push(new vscode.Diagnostic(
+                new vscode.Range(startPos, endPos),
+                `Code Injection Risk: ${message}`,
+                vscode.DiagnosticSeverity.Warning
+            ));
+
+            // Avoid infinite loops for zero-length matches
+            if (match.index === pattern.lastIndex) {
+                pattern.lastIndex++;
+            }
         }
-      },
-    }
+    });
 
-    // Helper function to standardize violations
-    function addViolation({
-      node,
-      message,
-      suggestion,
-      fileName,
-      severity = 'high'
-    }: {
-      node: t.Node;
-      message: string;
-      suggestion: string;
-      fileName: string;
-      severity?: 'high' | 'medium' | 'low';
-    }) {
-      if (!node.loc) return; // skip if no location data
-      
-      violations.push({
-        message,
-        severity,
-        ruleId: 'no-code-injection',
-        suggestion,
-        location: {
-          startLine: node.loc.start.line,
-          startCol: node.loc.start.column,
-          endLine: node.loc.end.line,
-          endCol: node.loc.end.column,
-          file: fileName
-        }
-      });
-    }
-
-    require('@babel/traverse').default(ast, visitor);
-    return violations;
-  }
-};
+    return diagnostics;
+}
