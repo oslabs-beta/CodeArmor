@@ -1,26 +1,53 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+// src/extension.ts
 import * as vscode from 'vscode';
+import { parser } from './parser';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  console.log('CodeArmor is now active!');
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "codearmor" is now active!');
+  const diagnosticCollection =
+    vscode.languages.createDiagnosticCollection('securityScan');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('codearmor.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from CodeArmor!');
-	});
+  const runScan = (document: vscode.TextDocument) => {
+    if (
+      document.languageId !== 'javascript' &&
+      document.languageId !== 'typescript'
+    )
+      return;
+    const code = document.getText();
+    const diagnostics = parser(code, document);
+    diagnosticCollection.set(document.uri, diagnostics);
+  };
 
-	context.subscriptions.push(disposable);
+  context.subscriptions.push(
+    vscode.workspace.onDidOpenTextDocument(runScan),
+    vscode.workspace.onDidChangeTextDocument((e) => runScan(e.document)),
+    vscode.commands.registerCommand('extension.scanSecurity', () => {
+      const editor = vscode.window.activeTextEditor;
+      if (editor) runScan(editor.document);
+    }),
+    vscode.languages.registerHoverProvider(
+      [
+        { scheme: 'file', language: 'javascript' },
+        { scheme: 'file', language: 'typescript' },
+      ],
+      {
+        provideHover(document, position) {
+          const diagnostics = diagnosticCollection.get(document.uri);
+          if (!diagnostics) return;
+          for (const diag of diagnostics) {
+            if (diag.range.contains(position)) {
+              return new vscode.Hover(diag.message);
+            }
+          }
+        },
+      }
+    )
+  );
+
+  if (vscode.window.activeTextEditor) {
+    runScan(vscode.window.activeTextEditor.document);
+  }
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
