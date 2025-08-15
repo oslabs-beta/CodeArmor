@@ -1,7 +1,7 @@
 //import { noSecretsRule } from "./noHardCodedSecrets";
-import { noCodeInjectionRule } from "./noCodeInjection";
+//import { noCodeInjectionRule } from "./noCodeInjection";
 
-export const allRules = [
+//export const allRules = [
   //noSecretsRule,
-  noCodeInjectionRule
-];
+  //noCodeInjectionRule
+//];

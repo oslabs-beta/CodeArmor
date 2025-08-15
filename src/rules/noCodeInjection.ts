@@ -1,3 +1,4 @@
+// src/rules/noCodeInjection.ts
 import * as vscode from 'vscode';
 
 export function noCodeInjectionRule(
@@ -6,48 +7,83 @@ export function noCodeInjectionRule(
 ): vscode.Diagnostic[] {
     const diagnostics: vscode.Diagnostic[] = [];
     
-    // Dangerous patterns to detect
     const injectionPatterns = [
         {
-            pattern: /(setTimeout|setInterval)\([^)]*[^'"]\s*[),]/g,
-            message: "Dynamic code execution in timer functions"
+            pattern: /eval\s*\(\s*[^'"`][^)]*/g,
+            message: "Direct eval usage with dynamic input can execute arbitrary code",
+            severity: vscode.DiagnosticSeverity.Error
         },
         {
-            pattern: /\.(innerHTML|outerHTML)\s*=\s*[^'"]/g,
-            message: "Unsanitized HTML assignment"
+            pattern: /\.(innerHTML|outerHTML)\s*=\s*[^'"`][^;]*/g,
+            message: "Unsanitized HTML assignment can lead to XSS",
+            severity: vscode.DiagnosticSeverity.Warning
         },
         {
-            pattern: /new\s+(ActiveXObject|Script|WScript|Shell)/gi,
-            message: "Dangerous COM/ActiveX object creation"
+            pattern: /(setTimeout|setInterval)\s*\(\s*[^'"`][^),]*[),]/g,
+            message: "String argument in timer can execute arbitrary code",
+            severity: vscode.DiagnosticSeverity.Error
         },
         {
-            pattern: /Function\.constructor\(/g,
-            message: "Function constructor usage (similar to new Function)"
+            pattern: /new\s+Function\s*\([^)]*[^'"`]/g,
+            message: "Function constructor with dynamic input can execute arbitrary code",
+            severity: vscode.DiagnosticSeverity.Error
         },
         {
-            pattern: /\.(execScript|evalScript)\s*\(/gi,
-            message: "Legacy script execution method"
+            pattern: /document\.write\(\s*[^'"`][^)]*/g,
+            message: "Unsanitized document.write can lead to XSS",
+            severity: vscode.DiagnosticSeverity.Warning
+        },
+        {
+            pattern: /\.srcdoc\s*=\s*[^'"`][^;]*/g,
+            message: "Unsanitized iframe srcdoc can lead to XSS",
+            severity: vscode.DiagnosticSeverity.Warning
+        },
+        {
+            pattern: /<script[^>]*>[\s\S]*?<\/script>/gi,
+            message: "Dynamic script injection can execute arbitrary code",
+            severity: vscode.DiagnosticSeverity.Error
+        },
+        {
+            pattern: /\.replaceWith\(\s*[^'"`][^)]*/g,
+            message: "Unsanitized DOM replacement can lead to XSS",
+            severity: vscode.DiagnosticSeverity.Warning
+        },
+        {
+            pattern: /\.insertAdjacentHTML\(\s*[^'"`][^)]*/g,
+            message: "Unsanitized HTML insertion can lead to XSS",
+            severity: vscode.DiagnosticSeverity.Warning
         }
     ];
 
-    injectionPatterns.forEach(({ pattern, message }) => {
+    for (const { pattern, message, severity } of injectionPatterns) {
         let match: RegExpExecArray | null;
+        pattern.lastIndex = 0; // Reset regex state
+        
         while ((match = pattern.exec(code)) !== null) {
-            const startPos = document.positionAt(match.index);
-            const endPos = document.positionAt(match.index + match[0].length);
-            
-            diagnostics.push(new vscode.Diagnostic(
-                new vscode.Range(startPos, endPos),
-                `Code Injection Risk: ${message}`,
-                vscode.DiagnosticSeverity.Warning
-            ));
+            try {
+                const start = match.index;
+                const end = start + match[0].length;
+                const range = new vscode.Range(
+                    document.positionAt(start),
+                    document.positionAt(end)
+                );
 
-            // Avoid infinite loops for zero-length matches
+                const diagnostic = new vscode.Diagnostic(
+                    range,
+                    `[SECURITY] ${message} - Found: "${match[0].substring(0, 30)}${match[0].length > 30 ? '...' : ''}"`,
+                    severity
+                );
+                diagnostic.source = 'CodeArmor';
+                diagnostics.push(diagnostic);
+            } catch (err) {
+                console.error(`Error processing match: ${err}`);
+            }
+
             if (match.index === pattern.lastIndex) {
                 pattern.lastIndex++;
             }
         }
-    });
+    }
 
     return diagnostics;
 }

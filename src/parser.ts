@@ -3,6 +3,7 @@ import * as babelParser from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as vscode from 'vscode';
 import { hardCodedSecretsRule } from './rules/nonHardCodedSecrets';
+import { noCodeInjectionRule } from './rules/noCodeInjection';
 
 export function parser(
   code: string,
@@ -35,8 +36,9 @@ export function parser(
 
   if (!hasHandler) return diagnostics;
 
-  // Run regex-based rule(s)
+  // Run all security rules
   diagnostics.push(...hardCodedSecretsRule(code, document));
+  diagnostics.push(...noCodeInjectionRule(code, document));
 
   return diagnostics;
 }
