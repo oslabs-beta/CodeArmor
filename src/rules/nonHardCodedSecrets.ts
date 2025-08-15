@@ -1,4 +1,5 @@
 // src/rule.ts
+import { link } from 'fs';
 import * as vscode from 'vscode';
 
 /**
@@ -60,7 +61,7 @@ export function hardCodedSecretsRule(
       diagnostics.push(
         new vscode.Diagnostic(
           range,
-          'Hardcoded secrets detected',
+          'Hardcoded secrets detected. Learn more: https://blog.gitguardian.com/why-its-urgent-to-deal-with-your-hard-coded-credentials/ \n Please remove from codebase. At minimum please put them in a env file',
           vscode.DiagnosticSeverity.Warning
         )
       );
