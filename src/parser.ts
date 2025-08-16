@@ -16,7 +16,7 @@ export function parser(
     plugins: ['typescript', 'jsx'],
     ranges: true,
   });
-
+  
   let hasHandler = false;
 
   traverse(ast, {
@@ -34,7 +34,9 @@ export function parser(
     },
   });
 
-  if (!hasHandler) return diagnostics;
+  if (!hasHandler) {
+    return diagnostics;
+  }
 
   // Run all security rules
   diagnostics.push(...hardCodedSecretsRule(code, document));

@@ -13,7 +13,9 @@ export function activate(context: vscode.ExtensionContext) {
       document.languageId !== 'javascript' &&
       document.languageId !== 'typescript'
     )
-      return;
+      {
+        return;
+      }
     const code = document.getText();
     const diagnostics = parser(code, document);
     diagnosticCollection.set(document.uri, diagnostics);
@@ -24,7 +26,9 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidChangeTextDocument((e) => runScan(e.document)),
     vscode.commands.registerCommand('extension.scanSecurity', () => {
       const editor = vscode.window.activeTextEditor;
-      if (editor) runScan(editor.document);
+      if (editor) {
+        runScan(editor.document);
+      }
     }),
     vscode.languages.registerHoverProvider(
       [
@@ -34,7 +38,8 @@ export function activate(context: vscode.ExtensionContext) {
       {
         provideHover(document, position) {
           const diagnostics = diagnosticCollection.get(document.uri);
-          if (!diagnostics) return;
+          if (!diagnostics) {
+            return;}
           for (const diag of diagnostics) {
             if (diag.range.contains(position)) {
               return new vscode.Hover(diag.message);
