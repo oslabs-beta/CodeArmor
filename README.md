@@ -1,71 +1,99 @@
-# codearmor README
+CodeArmor README
 
-This is the README for your extension "codearmor". After writing up a brief description, we recommend including the following sections.
+CodeArmor is a Visual Studio extension designed to help developers detect and address security vulnerabilities in their code before they become real threats. It parses code for common weaknesses such as hard-coded secrets, insecure patterns, and risky configurations, then provides actionable feedback with direct links to trusted security resources.
 
-## Features
+By integrating seamlessly into Visual Studio’s workflow, CodeArmor empowers developers to write more secure code without leaving their IDE.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Features
 
-For example if there is an image subfolder under your extension project workspace:
+🔍 Automated Security Parsing
+Scans your code for common vulnerabilities, including:
 
-\!\[feature X\]\(images/feature-x.png\)
+Hard-coded API keys, passwords, and secrets
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Insecure coding practices and patterns
 
-## Requirements
+Potential misconfigurations that could lead to security risks
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+🖊️ Inline Code Underlining
+Problematic code is automatically underlined for quick visibility.
 
-## Extension Settings
+💡 Smart Hover Popups
+Hovering over flagged code shows a tooltip with:
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+The specific issue detected
 
-For example:
+Helpful remediation advice
 
-This extension contributes the following settings:
+A trusted link to learn more (e.g., OWASP, Microsoft docs)
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+▶️ Command Bar Integration
+Once launched from the Run/Debug tab, a command bar appears at the top-center of Visual Studio with controls to:
 
-## Known Issues
+Run scans
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Pause parsing
 
-## Release Notes
+Restart analysis
 
-Users appreciate release notes as you update your extension.
+⚡ Lightweight and Non-Intrusive
+Runs locally, does not execute your code, and is designed to have minimal impact on your workflow.
 
-### 1.0.0
+Example Screenshot:
 
-Initial release of ...
 
-### 1.0.1
+Requirements
 
-Fixed issue #.
+Visual Studio 2022 or later
 
-### 1.1.0
+Windows 10 or later
 
-Added features X, Y, and Z.
+Install dependencies by running:
 
----
+npm install
 
-## Following extension guidelines
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+This will download and configure all necessary packages for the extension.
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+Extension Settings
 
-## Working with Markdown
+CodeArmor contributes the following settings:
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+codearmor.enable: Enable/disable CodeArmor scanning.
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+codearmor.severityLevel: Configure the minimum severity of issues to display (low, medium, high).
 
-## For more information
+codearmor.autoScan: Enable or disable automatic scanning when files are saved.
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+Known Issues
 
-**Enjoy!**
+Initial parsing may take slightly longer on very large codebases.
+
+Currently supports TypeScript and JavaScript; more languages will be added in future releases.
+
+Release Notes
+1.0.0
+
+Initial release of CodeArmor.
+
+Supports scanning TypeScript and JavaScript projects.
+
+Highlights vulnerabilities such as hard-coded secrets with inline underlining.
+
+Provides hover popups with remediation guidance and links to trusted sources.
+
+Includes run/pause/restart controls in the command bar.
+
+Following Extension Guidelines
+
+This extension follows the official Visual Studio extension best practices:
+
+Extension Guidelines
+
+For More Information
+
+Visual Studio Code’s Markdown Support
+
+Markdown Syntax Reference
+
+Stay secure with CodeArmor! 🛡️
