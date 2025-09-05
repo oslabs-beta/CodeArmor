@@ -4,7 +4,7 @@ import traverse from '@babel/traverse';
 import * as vscode from 'vscode';
 import { hardCodedSecretsRule } from './rules/nonHardCodedSecrets';
 import { noCodeInjectionRule } from './rules/noCodeInjection';
-
+import { noUnsafeDeserializationRule } from './rules/noUnsafeDeserialization';
 export function parser(
   code: string,
   document: vscode.TextDocument
@@ -16,7 +16,6 @@ export function parser(
     plugins: ['typescript', 'jsx'],
     ranges: true,
   });
-
   let hasHandler = false;
 
   traverse(ast, {
@@ -39,6 +38,7 @@ export function parser(
   // Run all security rules
   diagnostics.push(...hardCodedSecretsRule(code, document));
   diagnostics.push(...noCodeInjectionRule(code, document));
+  diagnostics.push(...noUnsafeDeserializationRule(code, document)); 
 
   return diagnostics;
 }

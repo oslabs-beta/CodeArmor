@@ -8,46 +8,55 @@ export function noCodeInjectionRule(
     const diagnostics: vscode.Diagnostic[] = [];
     
     const injectionPatterns = [
+        //Unsafe eval usage
         {
             pattern: /eval\s*\(\s*[^'"`][^)]*/g,
             message: "Direct eval usage with dynamic input can execute arbitrary code",
             severity: vscode.DiagnosticSeverity.Error
         },
+        //Unsanitized HTML assignment
         {
-            pattern: /\.(innerHTML|outerHTML)\s*=\s*[^'"`][^;]*/g,
+            pattern: /\.(innerHTML|outerHTML)\s*=\s*[a-zA-Z_$][\w$]*/g,
             message: "Unsanitized HTML assignment can lead to XSS",
             severity: vscode.DiagnosticSeverity.Warning
         },
+        //String arguments in Timer
         {
-            pattern: /(setTimeout|setInterval)\s*\(\s*[^'"`][^),]*[),]/g,
+            pattern: /(setTimeout|setInterval)\s*\(\s*["'`]/g,
             message: "String argument in timer can execute arbitrary code",
             severity: vscode.DiagnosticSeverity.Error
         },
+        //Function contructor with dynamic input 
         {
             pattern: /new\s+Function\s*\([^)]*[^'"`]/g,
             message: "Function constructor with dynamic input can execute arbitrary code",
             severity: vscode.DiagnosticSeverity.Error
         },
+        //Unsanitized document.write
         {
             pattern: /document\.write\(\s*[^'"`][^)]*/g,
             message: "Unsanitized document.write can lead to XSS",
             severity: vscode.DiagnosticSeverity.Warning
         },
+        //Unsanitized iframe
         {
             pattern: /\.srcdoc\s*=\s*[^'"`][^;]*/g,
             message: "Unsanitized iframe srcdoc can lead to XSS",
             severity: vscode.DiagnosticSeverity.Warning
         },
+        //Dymnamic script injection
         {
             pattern: /<script[^>]*>[\s\S]*?<\/script>/gi,
             message: "Dynamic script injection can execute arbitrary code",
             severity: vscode.DiagnosticSeverity.Error
         },
+        //Unsanitized DOM 
         {
             pattern: /\.replaceWith\(\s*[^'"`][^)]*/g,
             message: "Unsanitized DOM replacement can lead to XSS",
             severity: vscode.DiagnosticSeverity.Warning
         },
+        //Unsanitized HTML
         {
             pattern: /\.insertAdjacentHTML\(\s*[^'"`][^)]*/g,
             message: "Unsanitized HTML insertion can lead to XSS",
