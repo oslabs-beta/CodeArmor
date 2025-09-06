@@ -1,52 +1,31 @@
-# CodeArmor 🛡️
 
-**CodeArmor** is a Visual Studio extension that helps developers detect and address security vulnerabilities before they become real threats.  
-It parses code for common weaknesses such as **hard-coded secrets**, **insecure patterns**, and **risky configurations**, then provides actionable feedback with direct links to trusted security resources.
+![Logo](assets/osp-logo.png)
 
-By integrating seamlessly into Visual Studio, CodeArmor empowers developers to write more secure code without leaving their IDE.
 
----
+CodeArmor
+License: MIT | Release: 1.0.0 | Contributions: Welcome
 
-## Features
+About
+CodeArmor is a Visual Studio extension that helps developers detect and fix security vulnerabilities directly in their IDE. It parses code for common weaknesses like hard-coded secrets, unsafe input, and insecure patterns. The extension provides actionable fixes and links to trusted resources, empowering developers to write secure code safely and efficiently with minimal performance impact.
 
-- 🔍 **Automated Security Parsing**  
-  Scans your code for vulnerabilities such as:
-  - Hard-coded API keys, passwords, and secrets  
-  - Insecure coding practices and patterns  
-  - Potential misconfigurations  
+Key Features
+CodeArmor offers several key advantages for secure development: Seamless Integration (works directly within Visual Studio), Rule-Based Analysis (checks for injection, deserialization, secrets management, and more), Actionable Guidance (provides explanations and secure coding suggestions with resource links), and is Lightweight & Fast (runs in real-time as you code).
 
-- 🖊️ **Inline Code Underlining**  
-  Problematic code is automatically underlined for quick visibility.
+Quickstart
+Prerequisites: Ensure Node.js is installed, then run npm install. Installation: Install CodeArmor from the Visual Studio Marketplace or load it locally. Running: Open your project in Visual Studio, navigate to the Run and Debug sidebar, and select Launch Extension. A new VS instance will open. Debugging: Set breakpoints in your extension code and view logs in the Debug Console. Stop debugging by closing the launched instance.
 
-- 💡 **Smart Hover Popups**  
-  Hovering over flagged code shows:
-  - The specific issue detected  
-  - Helpful remediation advice  
-  - A trusted link to learn more (e.g., OWASP, Microsoft Docs)
+Security Rules
+CodeArmor analyzes code across key categories: Injection Prevention (detects unsafe eval(), dynamic script injection, etc.), Deserialization Safety (catches unsafe JSON.parse(), prototype pollution, and untrusted object creation), Secrets Management (flags hardcoded credentials and API keys), Input Validation (highlights unvalidated or unsanitized user input), and Configuration Hardening (identifies insecure defaults and weak CORS settings).
 
-- ▶️ **Command Bar Integration**  
-  A toolbar with controls to:
-  - Run scans  
-  - Pause parsing  
-  - Restart analysis  
+Contributing & License
+Contributing: Please refer to our Contributing Guide.
 
-- ⚡ **Lightweight & Non-Intrusive**  
-  Runs locally, never executes your code, and minimizes workflow impact.
+License: This project is under the MIT License.
 
----
 
-## Example Screenshot
-
-![CodeArmor Screenshot](path-to-screenshot.png)
-
----
-
-## Requirements
-
-- Visual Studio 2022 or later  
-- Windows 10 or later  
-
-Install dependencies with:
-
-```bash
-npm install
+| Name            | GitHub      | LinkedIn      |
+| --------------- | ----------- | ------------- |
+| Thin Thin Khine | [GitHub](#) | [LinkedIn](#) |
+| Kevin Wu        | [GitHub](#) | [LinkedIn](#) |
+| Peter Tan-Gatue | [GitHub](#) | [LinkedIn](#) |
+| Michal Marrow   | [GitHub](#) | [LinkedIn](#) |
