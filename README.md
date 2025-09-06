@@ -1,5 +1,8 @@
 
 ![Logo](assets/osp-logo.png)
+<div align="center">
+  <img src="assets/logo.png" alt="My Project Logo" height="150">
+</div>
 
 
 CodeArmor
