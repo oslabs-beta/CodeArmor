@@ -14,6 +14,7 @@ import * as vscode from 'vscode'; // provides textdocument type and diagnostic o
 import { hardCodedSecretsRule } from './rules/nonHardCodedSecrets'; //regex based rule
 import { noCodeInjectionRule } from './rules/noCodeInjection'; // regex-based rule
 import { iamWildcardVisitor } from './rules/iamWildcards'; //visitor factory that returns traversal callbacks to detect risky IAM wildcard usage
+import { noUnsafeDeserializationRule } from './rules/noUnsafeDeserialization';
 
 /** Replace characters in entire file [s, e) with spaces to keep length and indices the same */
 function maskRange(chars: string[], s: number, e: number) {
@@ -31,6 +32,7 @@ export function parser(
 
   // parse with ranges + comments to map positions and strip safely
   const ast = babelParser.parse(code, {
+
     // parse text to an AST
     sourceType: 'module', // module supports ESM syntax
     plugins: ['typescript', 'jsx'], // plugins enable Typescript JSX parsing
@@ -42,6 +44,7 @@ export function parser(
   const comments = ast.comments ?? []; //grab comment spans to mask out later
 
   // Discover: exports.handler = (function/arrow)
+
   let hasHandler = false;
   let handlerStart: number | undefined;
   let handlerEnd: number | undefined;
@@ -256,9 +259,10 @@ export function parser(
 //     return diagnostics;
 //   }
 
-//   // Run all security rules
-//   diagnostics.push(...hardCodedSecretsRule(code, document));
-//   diagnostics.push(...noCodeInjectionRule(code, document));
+  // Run all security rules
+  diagnostics.push(...hardCodedSecretsRule(code, document));
+  diagnostics.push(...noCodeInjectionRule(code, document));
+  diagnostics.push(...noUnsafeDeserializationRule(code, document)); 
 
 //   return diagnostics;
 // }
