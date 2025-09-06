@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img src="assets/osp-logo.png" alt="My Project Logo" height="150">
+  <img src="assets/osp-logo.png" alt="My Project Logo" height="250", width="500">
 </div>
 
 
