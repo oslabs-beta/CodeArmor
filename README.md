@@ -3,30 +3,86 @@
 </div>
 
 
-CodeArmor
+Secure your code, prevent vulnerabilities, and write with confidence
+
 License: MIT | Release: 1.0.0 | Contributions: Welcome
 
 About
-CodeArmor is a Visual Studio extension that helps developers detect and fix security vulnerabilities directly in their IDE. It parses code for common weaknesses like hard-coded secrets, unsafe input, and insecure patterns. The extension provides actionable fixes and links to trusted resources, empowering developers to write secure code safely and efficiently with minimal performance impact.
+
+CodeArmor is a Visual Studio extension that helps developers detect and fix security vulnerabilities directly in their IDE. It parses code for weaknesses like hard-coded secrets, unsafe input, and insecure patterns. The extension provides actionable fixes and links to trusted resources, empowering developers to write secure code safely and efficiently with minimal performance impact.
+
+Current Scope (v1.0.0)
+
+CodeArmor is currently focused on AWS Lambda functions. Scanning is limited to handler-level code paths where security risks are most impactful (e.g., input validation, IAM permissions, and secret handling). This low-noise approach minimizes false positives and maximizes trust, making the tool practical for everyday use in the IDE while supporting high developer adoption.
 
 Key Features
-CodeArmor offers several key advantages for secure development: Seamless Integration (works directly within Visual Studio), Rule-Based Analysis (checks for injection, deserialization, secrets management, and more), Actionable Guidance (provides explanations and secure coding suggestions with resource links), and is Lightweight & Fast (runs in real-time as you code).
+
+CodeArmor offers several key advantages for secure development:
+
+Seamless Integration – Works directly within Visual Studio
+
+Rule-Based Analysis – Focused on AWS Lambda handler logic: secrets detection, IAM rules, unsafe input, injection, deserialization, and more
+
+Low-Noise Scanning – Prioritizes precision over breadth to prevent alert fatigue and ensure developer trust
+
+Actionable Guidance – Provides explanations and secure coding suggestions with resource links
+
+Lightweight & Fast – Runs in real time as you code, without slowing down your IDE
 
 Quickstart
-Prerequisites: Ensure Node.js is installed, then run npm install. Installation: Install CodeArmor from the Visual Studio Marketplace or load it locally. Running: Open your project in Visual Studio, navigate to the Run and Debug sidebar, and select Launch Extension. A new VS instance will open. Debugging: Set breakpoints in your extension code and view logs in the Debug Console. Stop debugging by closing the launched instance.
+Prerequisites
+
+Ensure you have Node.js installed, then install dependencies:
+
+npm install
+
+Installation
+
+Install CodeArmor from the Visual Studio Marketplace, or load it locally for development.
+
+Running the Extension
+
+Open the project in Visual Studio
+
+Navigate to the Run and Debug sidebar
+
+Select Launch Extension (green arrow at the top)
+
+A new instance of Visual Studio will open with CodeArmor loaded for testing
+
+Debugging Notes
+
+Set breakpoints in your extension code; they will trigger in the launched instance
+
+View logs in the Debug Console
+
+Stop debugging by closing the launched instance and stopping the debug session
 
 Security Rules
-CodeArmor analyzes code across key categories: Injection Prevention (detects unsafe eval(), dynamic script injection, etc.), Deserialization Safety (catches unsafe JSON.parse(), prototype pollution, and untrusted object creation), Secrets Management (flags hardcoded credentials and API keys), Input Validation (highlights unvalidated or unsanitized user input), and Configuration Hardening (identifies insecure defaults and weak CORS settings).
 
-Contributing & License
-Contributing: Please refer to our Contributing Guide.
+CodeArmor analyzes code across key categories:
 
-License: This project is under the MIT License.
+Injection Prevention – Detects unsafe eval(), dynamic script injection, unsanitized DOM APIs, and related injection vectors
 
+Deserialization Safety – Catches unsafe JSON.parse(), prototype pollution, object merging, and untrusted object creation
 
-| Name            | GitHub      | LinkedIn      |
-| --------------- | ----------- | ------------- |
-| Thin Thin Khine | [GitHub](#) | [LinkedIn](#) |
-| Kevin Wu        | [GitHub](#) | [LinkedIn](#) |
-| Peter Tan-Gatue | [GitHub](#) | [LinkedIn](#) |
-| Michal Marrow   | [GitHub](#) | [LinkedIn](#) |
+Secrets Management – Flags hardcoded credentials, API keys, tokens, and other sensitive values
+
+Input Validation – Highlights unvalidated or unsanitized user input that could lead to XSS or SQL injection
+
+IAM Permissions – Surfaces overly permissive policy strings and dangerous role usage
+
+Configuration Hardening – Identifies insecure defaults, weak CORS settings, and risky deployment configurations
+
+Future Work
+
+Future iterations may broaden support beyond Lambda-specific contexts to cover general Node.js and TypeScript projects, further extending CodeArmor’s security coverage.
+
+Contributing
+
+We welcome contributions to CodeArmor! Please see our Contributing Guide
+ for details on how to get started.
+
+License
+
+MIT License
