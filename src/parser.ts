@@ -15,7 +15,7 @@ import { hardCodedSecretsRule } from './rules/nonHardCodedSecrets'; //regex base
 import { noCodeInjectionRule } from './rules/noCodeInjection'; // regex-based rule
 import { iamWildcardVisitor } from './rules/iamWildcards'; //visitor factory that returns traversal callbacks to detect risky IAM wildcard usage
 import { noUnsafeDeserializationRule } from './rules/noUnsafeDeserialization';
-
+import { sqlInjectionRule } from './rules/sqlInjection';
 /** Replace characters in entire file [s, e) with spaces to keep length and indices the same */
 function maskRange(chars: string[], s: number, e: number) {
   const end = Math.min(e, chars.length);
@@ -144,7 +144,8 @@ export function parser(
   diagnostics.push(
     ...hardCodedSecretsRule(maskedCode, document),
     ...noCodeInjectionRule(maskedCode, document),
-    ...noUnsafeDeserializationRule(code, document)
+    ...noUnsafeDeserializationRule(code, document),
+    ...sqlInjectionRule(code, document)
   );
 
   // Scope IAM Wildcard checks strictly to the handler body by traversing only the subtree
