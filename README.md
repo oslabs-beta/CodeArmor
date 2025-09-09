@@ -9,11 +9,11 @@ About
 
 CodeArmor is a Visual Studio extension that helps developers detect and fix security vulnerabilities directly in their IDE. It parses code for common weaknesses such as hard-coded secrets, unsafe input, and insecure patterns, then provides actionable fixes with links to trusted resources. The extension empowers developers to write secure code safely and efficiently with minimal performance impact.
 
-Current Scope (v1.0.0)
+Current Scope (v1.0.0):
 
 Focused on AWS Lambda functions. Scans handler-level code paths where security risks are most impactful (input validation, IAM permissions, secret handling). This low-noise approach minimizes false positives and maximizes trust, making CodeArmor practical for everyday IDE use.
 
-Key Features
+Key Features:
 
   Seamless Integration: Works directly in Visual Studio
 
@@ -25,7 +25,7 @@ Key Features
 
   Lightweight & Fast: Runs in real time without slowing your IDE
 
-Quickstart
+Quickstart:
 
   Prerequisites: Install Node.js → npm install
 
@@ -35,7 +35,7 @@ Quickstart
 
   Debug: Set breakpoints, view logs in Debug Console, stop by closing the launched instance
 
-Security Rules
+Security Rules:
 
   Injection Prevention: Detects unsafe eval(), script injection, and unsanitized DOM APIs
 
@@ -49,11 +49,11 @@ Security Rules
 
   Configuration Hardening: Identifies insecure defaults, weak CORS, and risky configs
 
-Future Work
+Future Work:
 
   Planned support expansion beyond AWS Lambda to broader Node.js and TypeScript projects.
 
-Contributing & License
+Contributing & License:
 
   Contributing: Please refer to our Contributing Guide.
 
