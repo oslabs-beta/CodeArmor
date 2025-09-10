@@ -28,7 +28,10 @@ export function parser(
   code: string, // entry point -take file contents and VS Code document
   document: vscode.TextDocument
 ): vscode.Diagnostic[] {
-  const diagnostics: vscode.Diagnostic[] = []; // return diagnostics collection where findings are pushed
+
+  const diagnostics: vscode.Diagnostic[] = [];
+  let hasHandler = false;
+
 
   // parse with ranges + comments to map positions and strip safely
   const ast = babelParser.parse(code, {
@@ -44,6 +47,9 @@ export function parser(
 
   // Discover: exports.handler = (function/arrow)
 
+  const visitor = {
+    AssignmentExpression(path: any) {
+      const node = path.node;
   let hasHandler = false;
   let handlerStart: number | undefined;
   let handlerEnd: number | undefined;
@@ -100,8 +106,16 @@ export function parser(
         // currently supports exports.handler = function/arrow {}; can insert other handlers here
       }
     },
-  });
+    ...iamWildcardVisitor(document, diagnostics),
+  };
 
+  traverse(ast, visitor);
+
+  if (!hasHandler) {
+    return [];
+  }
+  // Run regex-based rule(s)
+  diagnostics.push(...hardCodedSecretsRule(code, document));
   // Lambda handler-only scope: if no handler body was found, return no diagnostics.
   if (
     !hasHandler ||
@@ -158,7 +172,6 @@ export function parser(
     undefined,
     handlerBodyPath
   );
-
   // post-filter: keep the diagnostics only inside handler body
   const start = handlerStart;
   const end = handlerEnd;

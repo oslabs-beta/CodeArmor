@@ -39,6 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
         provideHover(document, position) {
           const diagnostics = diagnosticCollection.get(document.uri);
           if (!diagnostics) {
+            
             return;}
           for (const diag of diagnostics) {
             if (diag.range.contains(position)) {
