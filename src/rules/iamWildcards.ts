@@ -15,22 +15,12 @@ export function iamWildcardVisitor(
       let hasResourceStar = false;
       node.properties.forEach((prop: any) => {
         if (!t.isObjectProperty(prop)) {
-            return;
-        }
-        if (!t.isIdentifier(prop.key) && !t.isStringLiteral(prop.key)) {
-            return;
-        }
-        const key = t.isIdentifier(prop.key)
-          ? prop.key.name
-          : prop.key.value;
+
         const value = prop.value;
         if (key === 'Action' || key === 'Resource') {
           if (t.isStringLiteral(value) && value.value === '*') {
             if (key === 'Action') {
-                hasActionStar = true;
-            }
-            if (key === 'Resource') {
-                hasResourceStar = true;
+
             }
           }
           if (t.isArrayExpression(value)) {
@@ -70,14 +60,3 @@ export function iamWildcardVisitor(
     },
   };
 }
-
-
-
-
-
-
-
-
-
-
-

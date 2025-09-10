@@ -12,9 +12,10 @@ export function activate(context: vscode.ExtensionContext) {
     if (
       document.languageId !== 'javascript' &&
       document.languageId !== 'typescript'
-    ) {
-      return;
-    }
+    )
+      {
+        return;
+      }
     const code = document.getText();
     const diagnostics = parser(code, document);
     diagnosticCollection.set(document.uri, diagnostics);
@@ -38,8 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
         provideHover(document, position) {
           const diagnostics = diagnosticCollection.get(document.uri);
           if (!diagnostics) {
-            return;
-          }
+            
+            return;}
           for (const diag of diagnostics) {
             if (diag.range.contains(position)) {
               return new vscode.Hover(diag.message);

@@ -1,3 +1,4 @@
+// src/diagnostic.ts
 import * as vscode from 'vscode';
 
 const diagnosticCollection =
