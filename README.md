@@ -1,71 +1,66 @@
-# codearmor README
+<div>
+  <img src="assets/osp-logo.png" alt="CodeArmor Logo" height="250", width="500">
+</div>
 
-This is the README for your extension "codearmor". After writing up a brief description, we recommend including the following sections.
+License: MIT | Release: 1.0.0 | Contributions: Welcome
 
-## Features
+About
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+CodeArmor is a Visual Studio extension that helps developers detect and fix security vulnerabilities directly in their IDE. It parses code for common weaknesses such as hard-coded secrets, unsafe input, and insecure patterns, then provides actionable fixes with links to trusted resources. The extension empowers developers to write secure code safely and efficiently with minimal performance impact.
 
-For example if there is an image subfolder under your extension project workspace:
+Current Scope (v1.0.0):
 
-\!\[feature X\]\(images/feature-x.png\)
+Focused on AWS Lambda functions. Scans handler-level code paths where security risks are most impactful (input validation, IAM permissions, secret handling). This low-noise approach minimizes false positives and maximizes trust, making CodeArmor practical for everyday IDE use.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Key Features:
 
-## Requirements
+Seamless Integration: Works directly in Visual Studio
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Rule-Based Analysis: Focused on AWS Lambda handler logic (secrets detection, IAM rules, unsafe input, injection, deserialization, and more)
 
-## Extension Settings
+Low-Noise Scanning: Precision-focused to minimize false positives
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Actionable Guidance: Secure coding suggestions with resource links
 
-For example:
+Lightweight & Fast: Runs in real time without slowing your IDE
 
-This extension contributes the following settings:
+Quickstart:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+Prerequisites: Install Node.js → npm install
 
-## Known Issues
+Installation: Install CodeArmor from Visual Studio Marketplace or load locally
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Run: Open project in Visual Studio → Run and Debug sidebar → select Launch Extension (green arrow)
 
-## Release Notes
+Debug: Set breakpoints, view logs in Debug Console, stop by closing the launched instance
 
-Users appreciate release notes as you update your extension.
+Security Rules:
 
-### 1.0.0
+Injection Prevention: Detects unsafe eval(), script injection, and unsanitized DOM APIs
 
-Initial release of ...
+Deserialization Safety: Flags unsafe JSON.parse(), prototype pollution, untrusted object creation
 
-### 1.0.1
+Secrets Management: Detects hardcoded credentials, API keys, tokens
 
-Fixed issue #.
+Input Validation: Highlights unsanitized user input (XSS, SQL injection risks)
 
-### 1.1.0
+IAM Permissions: Surfaces overly permissive policies and risky role usage
 
-Added features X, Y, and Z.
+Configuration Hardening: Identifies insecure defaults, weak CORS, and risky configs
 
----
+Future Work:
 
-## Following extension guidelines
+Planned support expansion beyond AWS Lambda to broader Node.js and TypeScript projects.
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+Contributing & License:
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+Contributing: Please refer to our Contributing Guide.
 
-## Working with Markdown
+License: MIT License
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+| Name            | GitHub                                    |
+| --------------- | ----------------------------------------- |
+| Thin Thin Khine | [GitHub](https://github.com/Thinthin77)   |
+| Kevin Wu        | [GitHub](https://github.com/KevinWuD)     |
+| Peter Tan-Gatue | [GitHub](https://github.com/Ptangatue)    |
+| Michal Marrow   | [GitHub](https://github.com/MichalMarrow) |
