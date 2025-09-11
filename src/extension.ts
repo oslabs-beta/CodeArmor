@@ -1,8 +1,8 @@
-// src/extension.ts
 import * as vscode from 'vscode';
 import { parser } from './parser';
 
 export function activate(context: vscode.ExtensionContext) {
+  vscode.window.showInformationMessage('CodeArmor is now active!');
   console.log('CodeArmor is now active!');
 
   const diagnosticCollection =
@@ -53,7 +53,6 @@ export function activate(context: vscode.ExtensionContext) {
   if (vscode.window.activeTextEditor) {
     runScan(vscode.window.activeTextEditor.document);
   }
-  
 }
 
 export function deactivate() {}

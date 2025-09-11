@@ -1,10 +1,12 @@
-// src/parser.ts
-// handler-only scanning for serverless security
-// the handler function (Lambda) is the entry point where every incoming event is processed
-// the handler is where the user input meets the highest risk zone - handler runs on every request
-// handler-scope means only warnings come from request-time vulnerabilities - low noise
-// fewer false positives, better UX, higher developer adoption, aligns with serverless security requirements
-// stretch feature: optional module-scope scanning - scanning outside the handler
+/*
+src/parser.ts
+handler-only scanning for serverless security
+the handler function (Lambda) is the entry point where every incoming event is processed
+the handler is where the user input meets the highest risk zone - handler runs on every request
+handler-scope means only warnings come from request-time vulnerabilities - low noise
+fewer false positives, better UX, higher developer adoption, aligns with serverless security requirements
+stretch feature: optional module-scope scanning - scanning outside the handler
+*/
 
 import * as babelParser from '@babel/parser'; // babel turns file's text to AST
 import traverse, { NodePath } from '@babel/traverse'; //import AST walker, NodePath typings for safer access to node paths
