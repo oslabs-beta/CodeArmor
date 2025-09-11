@@ -1,8 +1,9 @@
 {
   "name": "codearmor",
   "displayName": "CodeArmor",
-  "description": "",
-  "version": "0.0.1",
+  "description": "CodeArmor is a Visual Studio extension that helps developers detect and fix security vulnerabilities directly in their IDE.",
+  "version": "1.0.0",
+  "publisher": "CodeArmor",
   "engines": {
     "vscode": "^1.102.0"
   },
