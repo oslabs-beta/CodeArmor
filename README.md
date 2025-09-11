@@ -1,5 +1,5 @@
 <div>
-  <img src="assets/osp-logo.png" alt="CodeArmor Logo" height="250", width="500">
+  <img src="https://assets.filmseats.com/osp-logo.png" alt="CodeArmor Logo" height="250", width="500">
 </div>
 
 License: MIT | Release: 1.0.0 | Contributions: Welcome
