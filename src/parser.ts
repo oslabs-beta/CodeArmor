@@ -1,5 +1,5 @@
-// src/parser.ts from parser-update
-// this update does handler-only scanning for serverless security
+// src/parser.ts
+// handler-only scanning for serverless security
 // the handler function (Lambda) is the entry point where every incoming event is processed
 // the handler is where the user input meets the highest risk zone - handler runs on every request
 // handler-scope means only warnings come from request-time vulnerabilities - low noise
@@ -14,6 +14,8 @@ import * as vscode from 'vscode'; // provides textdocument type and diagnostic o
 import { hardCodedSecretsRule } from './rules/nonHardCodedSecrets'; //regex based rule
 import { noCodeInjectionRule } from './rules/noCodeInjection'; // regex-based rule
 import { iamWildcardVisitor } from './rules/iamWildcards'; //visitor factory that returns traversal callbacks to detect risky IAM wildcard usage
+import { noUnsafeDeserializationRule } from './rules/noUnsafeDeserialization';
+import { sqlInjectionRule } from './rules/sqlInjection';
 
 /** Helper function to replace characters in the specific file range [s, e) with spaces to keep length and indices the same */
 function maskRange(chars: string[], s: number, e: number) {
@@ -153,7 +155,9 @@ export function parser(
   // each rule returns an array of diagnostics; spread unpacks arrays so all findings in one flat array for VS Code
   diagnostics.push(
     ...hardCodedSecretsRule(maskedCode, document),
-    ...noCodeInjectionRule(maskedCode, document)
+    ...noCodeInjectionRule(maskedCode, document),
+    ...noUnsafeDeserializationRule(maskedCode, document),
+    ...sqlInjectionRule(maskedCode, document)
   );
 
   // Scope IAM Wildcard checks strictly to the handler body by traversing only the subtree
