@@ -38,6 +38,7 @@
     "type": "git",
     "url": "https://github.com/oslabs-beta/CodeArmor.git"
   },
+  "icon": "https://assets.filmseats.com/codearmor_icon.png",
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
